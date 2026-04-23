@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Traffic Simulation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="scanlines"></div>
+
+<header class="top-bar">
+    <div class="header-left">
+        <span class="logo-icon">◈</span>
+        <div class="header-title">
+            <span class="title-main">Traffic Simulation</span>
+            <span class="title-sub">Real-time signal optimization</span>
+        </div>
+    </div>
+    <div class="header-right">
+        <div class="live-indicator"><span class="dot"></span> LIVE</div>
+        <div class="sim-clock" id="simClock">00:00:00</div>
+    </div>
+</header>
+
+<main class="workspace">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar sidebar-left">
+        <section class="panel">
+            <h2 class="panel-title">◆ INTERSECTION STATUS</h2>
+            <div id="intersectionStatus" class="status-list"></div>
+        </section>
+
+        <section class="panel">
+            <h2 class="panel-title">◆ SIGNAL TIMINGS</h2>
+            <div id="signalTimings" class="timing-list"></div>
+        </section>
+    </aside>
+
+    <!-- CANVAS CENTER -->
+    <div class="canvas-wrapper">
+        <div class="canvas-frame">
+            <canvas id="trafficCanvas" width="700" height="560"></canvas>
+            <div class="canvas-overlay-corners">
+                <span class="corner tl"></span>
+                <span class="corner tr"></span>
+                <span class="corner bl"></span>
+                <span class="corner br"></span>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls-bar">
+            <button class="ctrl-btn" id="btnStart">▶ START</button>
+            <button class="ctrl-btn" id="btnPause" disabled>⏸ PAUSE</button>
+            <button class="ctrl-btn" id="btnReset">↺ RESET</button>
+            <div class="speed-control">
+                <label for="speedSlider">SPEED</label>
+                <input type="range" id="speedSlider" min="0.5" max="4" step="0.5" value="1" />
+                <span id="speedVal">1x</span>
+            </div>
+            <button class="ctrl-btn heatmap-btn" id="btnHeatmap">⬛ HEATMAP OFF</button>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar sidebar-right">
+        <section class="panel">
+            <h2 class="panel-title">◆ CONGESTION METRICS</h2>
+            <div id="congestionMetrics" class="metrics-list">
+                <div class="metric-row"><span class="mlabel">TOTAL VEHICLES</span><span class="mval" id="mTotal">0</span></div>
+                <div class="metric-row"><span class="mlabel">AVG WAIT</span><span class="mval" id="mWait">0.0s</span></div>
+                <div class="metric-row"><span class="mlabel">MOST CONGESTED</span><span class="mval" id="mCong">—</span></div>
+                <div class="metric-row"><span class="mlabel">SIGNALS EXTENDED</span><span class="mval" id="mExtended">0</span></div>
+            </div>
+            <div id="queueBars" class="queue-bars"></div>
+        </section>
+
+        <section class="panel log-panel">
+            <h2 class="panel-title">◆ SIMULATION LOG</h2>
+            <div id="simLog" class="log-list"></div>
+        </section>
+    </aside>
+
+</main>
+
+<script src="simulation.js"></script>
+</body>
+</html>
