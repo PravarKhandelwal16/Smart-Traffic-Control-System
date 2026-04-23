@@ -1,306 +1,1132 @@
-/* ============================
-   TRAFFIC SIM — styles.css
-   Dark Minimal Theme
-   ============================ */
-
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
 
 :root {
-    --bg:        #141414;
-    --bg2:       #1a1a1a;
-    --bg3:       #222222;
-    --panel-bg:  #1a1a1a;
-    --border:    #2e2e2e;
-    --green:     #4caf7d;
-    --red:       #c0574a;
-    --amber:     #c49a3c;
-    --blue:      #5b8db8;
-    --text:      #e0ddd8;
-    --text-dim: #d1ceca;
-    --text-faint: #777575;
-    --font-mono: 'DM Mono', monospace;
-    --font-ui:   'DM Sans', sans-serif;
+  /* Color palette */
+  --clr-bg:          #0a0e1a;   /* deep dark background            */
+  --clr-surface:     #111827;   /* card / panel surface            */
+  --clr-surface-alt: #1a2235;   /* slightly lighter surface        */
+  --clr-border:      #1e2d45;   /* subtle border                   */
+  --clr-border-glow: #2563eb44; /* glowing border accent           */
+
+  /* Brand / accent */
+  --clr-accent:      #3b82f6;   /* blue accent                     */
+  --clr-accent-glow: #3b82f640; /* blue glow                       */
+
+  /* Traffic light colours */
+  --clr-red:         #ef4444;
+  --clr-red-glow:    #ef444460;
+  --clr-yellow:      #eab308;
+  --clr-yellow-glow: #eab30860;
+  --clr-green:       #22c55e;
+  --clr-green-glow:  #22c55e60;
+
+  /* Text hierarchy */
+  --clr-text-primary:   #f0f6ff;
+  --clr-text-secondary: #94a3b8;
+  --clr-text-muted:     #475569;
+
+  /* Road colours */
+  --clr-road:        #1c2333;
+  --clr-road-dark:   #151d2e;
+  --clr-asphalt:     #242e42;
+  --clr-marking:     #ffffff22;
+
+  --header-height:   60px;
+  --footer-height:   40px;
+  --panel-width:     240px;
+  --gap:             12px;
+  --inter-size:      480px;
+  --road-width:      100px;
+  --font-body:  'Inter', system-ui, sans-serif;
+  --font-mono:  'JetBrains Mono', monospace;
+  --transition-fast:   150ms ease;
+  --transition-smooth: 300ms ease;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 11px;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* ============ HEADER ============ */
-.top-bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 24px;
-    height: 50px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
-.scanlines { display: none; }
-
-.header-left { display: flex; align-items: center; gap: 12px; }
-
-.logo-icon {
-    font-size: 18px;
-    color: var(--text-dim);
+body {
+  font-family: var(--font-body);
+  background-color: var(--clr-bg);
+  color: var(--clr-text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
 }
 
-.header-title { display: flex; flex-direction: column; gap: 1px; }
-.title-main {
-    font-family: var(--font-ui);
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    color: var(--text);
-}
-.title-sub {
-    font-size: 9px;
-    color: var(--text-faint);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+/* Smooth scrollbars */
+::-webkit-scrollbar         { width: 6px; }
+::-webkit-scrollbar-track   { background: var(--clr-bg); }
+::-webkit-scrollbar-thumb   { background: var(--clr-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--clr-accent); }
+
+
+/* ----------------------------------------------------------
+   3. HEADER
+   ---------------------------------------------------------- */
+.app-header {
+  height: var(--header-height);
+  background: linear-gradient(90deg, #0d1526 0%, #111827 100%);
+  border-bottom: 1px solid var(--clr-border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 20px #00000055;
 }
 
-.header-right { display: flex; align-items: center; gap: 20px; }
-
-.live-indicator {
-    display: flex; align-items: center; gap: 5px;
-    color: var(--green); font-size: 10px;
-    font-family: var(--font-ui);
-    font-weight: 500;
-    letter-spacing: 0.05em;
-}
-.dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--green);
-    animation: blink 1.4s ease-in-out infinite;
-}
-@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
-
-.sim-clock {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-dim);
-    letter-spacing: 0.05em;
+.header-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-/* ============ LAYOUT ============ */
-.workspace {
-    display: grid;
-    grid-template-columns: 200px 1fr 200px;
-    height: calc(100vh - 50px);
-    overflow: hidden;
+/* Brand logo area */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-/* ============ SIDEBARS ============ */
-.sidebar {
-    background: var(--panel-bg);
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    overflow: hidden;
+.brand-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  background: var(--clr-surface-alt);
+  border-radius: 8px;
+  border: 1px solid var(--clr-border);
 }
-.sidebar-right { border-right: none; border-left: 1px solid var(--border); }
 
-.panel {
-    padding: 14px;
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
+.icon-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
-.log-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-.log-panel .log-list { flex: 1; overflow-y: auto; }
+
+.icon-dot.red    { background: var(--clr-red);    box-shadow: 0 0 6px var(--clr-red-glow); }
+.icon-dot.yellow { background: var(--clr-yellow); box-shadow: 0 0 6px var(--clr-yellow-glow); }
+.icon-dot.green  { background: var(--clr-green);  box-shadow: 0 0 6px var(--clr-green-glow); }
+
+.brand-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--clr-text-primary);
+}
+
+.brand-subtitle {
+  font-size: 0.7rem;
+  color: var(--clr-text-secondary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Live simulation badge */
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #16222a;
+  border: 1px solid #22c55e44;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--clr-green);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--clr-green);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+
+
+/* ----------------------------------------------------------
+   4. MAIN LAYOUT
+   ---------------------------------------------------------- */
+.app-main {
+  flex: 1;
+  display: flex;
+  gap: var(--gap);
+  padding: var(--gap);
+  min-height: 0;
+}
+
+
+/* ----------------------------------------------------------
+   5. PANELS (shared styles)
+   ---------------------------------------------------------- */
+.stats-panel,
+.control-panel {
+  width: var(--panel-width);
+  min-width: var(--panel-width);
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: 16px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  box-shadow: 0 4px 30px #00000040;
+}
 
 .panel-title {
-    font-family: var(--font-ui);
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--text-faint);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--clr-text-secondary);
 }
 
-/* STATUS LIST */
-.status-list { display: flex; flex-direction: column; gap: 6px; }
-.status-item {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 7px 9px;
-    font-size: 10px;
-    line-height: 1.7;
-}
-.status-item .node-id {
-    color: var(--text);
-    font-family: var(--font-ui);
-    font-weight: 600;
-    font-size: 10px;
-    margin-bottom: 2px;
-}
-.status-item .lane-row { display: flex; justify-content: space-between; }
-.lane-label { color: var(--text-dim); }
-.lane-count { color: var(--amber); }
-.lane-count.active { color: var(--green); font-weight: 500; }
-.extended-badge {
-    display: inline-block;
-    font-size: 8px;
-    color: var(--amber);
-    background: #2a1f08;
-    border: 1px solid #4a3810;
-    padding: 0 4px;
-    border-radius: 3px;
-    margin-left: 4px;
-    font-family: var(--font-ui);
-    font-weight: 500;
+.panel-desc {
+  font-size: 0.75rem;
+  color: var(--clr-text-muted);
+  line-height: 1.5;
 }
 
-/* TIMING LIST */
-.timing-list { display: flex; flex-direction: column; gap: 8px; }
-.timing-item { font-size: 10px; display: flex; flex-direction: column; gap: 4px; }
-.timing-header { display: flex; justify-content: space-between; color: var(--text-dim); }
-.timing-countdown { color: var(--text); font-weight: 500; }
-.timing-bar-bg {
-    width: 100%; height: 3px;
-    background: var(--bg3);
-    border-radius: 2px;
-    overflow: hidden;
-}
-.timing-bar-fill {
-    height: 100%; border-radius: 2px;
-    background: var(--green);
-    transition: width 0.15s linear;
+.panel-divider {
+  border: none;
+  border-top: 1px solid var(--clr-border);
+  margin: 4px 0;
 }
 
-/* METRICS */
-.metrics-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-.metric-row { display: flex; justify-content: space-between; align-items: baseline; }
-.mlabel {
-    color: var(--text-dim);
-    font-size: 9px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-family: var(--font-ui);
-}
-.mval {
-    color: var(--text);
-    font-size: 12px;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-.mval.flash { color: var(--amber); }
 
-/* QUEUE BARS */
-.queue-bars { display: flex; flex-direction: column; gap: 5px; }
-.qb-row { display: flex; align-items: center; gap: 6px; font-size: 9px; }
-.qb-label { color: var(--text-faint); width: 48px; flex-shrink: 0; }
-.qb-track {
-    flex: 1; height: 4px;
-    background: var(--bg3);
-    border-radius: 2px;
-    overflow: hidden;
+/* ----------------------------------------------------------
+   6. LANE DENSITY CARDS
+   ---------------------------------------------------------- */
+.lane-card {
+  background: var(--clr-surface-alt);
+  border: 1px solid var(--clr-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
 }
-.qb-fill {
-    height: 100%; border-radius: 2px;
-    transition: width 0.3s ease, background 0.3s ease;
-}
-.qb-num { color: var(--text-dim); width: 18px; text-align: right; flex-shrink: 0; }
 
-/* LOG */
-.log-list { display: flex; flex-direction: column; gap: 2px; padding-right: 2px; }
+/* Highlight active (green signal) lane */
+.lane-card.active {
+  border-color: var(--clr-green);
+  box-shadow: 0 0 14px var(--clr-green-glow);
+}
+
+/* Highlight busiest lane (most vehicles waiting) — amber border */
+.lane-card.busiest {
+  border-color: #f59e0b;
+  box-shadow: 0 0 12px #f59e0b40;
+}
+
+/* When a lane is both active AND busiest, green takes priority */
+.lane-card.active.busiest {
+  border-color: var(--clr-green);
+  box-shadow: 0 0 14px var(--clr-green-glow);
+}
+
+.lane-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lane-dir-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--clr-text-primary);
+}
+
+.dir-arrow {
+  color: var(--clr-accent);
+}
+
+.lane-count {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--clr-text-primary);
+  background: var(--clr-bg);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--clr-border);
+}
+
+/* Density progress bar */
+.density-bar-bg {
+  height: 5px;
+  background: var(--clr-bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.density-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 3px;
+  background: var(--clr-green);
+  transition: width 0.5s ease, background-color 0.3s ease;
+}
+
+/* Bar colour changes with density level */
+.density-bar.medium  { background: var(--clr-yellow); }
+.density-bar.high    { background: var(--clr-red); }
+
+.density-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--clr-text-muted);
+}
+
+/* Row holding density-label + busiest-badge side by side */
+.lane-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ── Heat dot ───────────────────────────────────────────────────────────
+   Small circle shown before the direction label in each lane card.
+   JS toggles heat-dot-low | heat-dot-medium | heat-dot-high classes.
+   ─────────────────────────────────────────────────────────────── */
+.heat-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+  flex-shrink: 0;
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+  background: var(--clr-text-muted); /* default: dim/off */
+}
+
+.heat-dot.heat-dot-low {
+  background: var(--clr-green);
+  box-shadow: 0 0 6px var(--clr-green-glow);
+}
+
+.heat-dot.heat-dot-medium {
+  background: var(--clr-yellow);
+  box-shadow: 0 0 6px var(--clr-yellow-glow);
+}
+
+.heat-dot.heat-dot-high {
+  background: var(--clr-red);
+  box-shadow: 0 0 8px var(--clr-red-glow);
+  /* Urgent pulsing for high-traffic lanes */
+  animation: heatPulse 0.9s ease-in-out infinite;
+}
+
+@keyframes heatPulse {
+  0%, 100% { opacity: 1;   transform: scale(1);    }
+  50%       { opacity: 0.5; transform: scale(0.7);  }
+}
+
+/* ── Busiest lane badge ───────────────────────────────────────────────────
+   Hidden by default (display: none). JS adds class .visible
+   to reveal it on the lane with the most waiting vehicles.
+   ─────────────────────────────────────────────────────────────── */
+.busiest-badge {
+  display: none;        /* hidden until JS adds .visible */
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #fbbf24;
+  text-shadow: 0 0 8px #f59e0b80;
+  animation: busiestFade 1.6s ease-in-out infinite;
+}
+
+.busiest-badge.visible {
+  display: inline;      /* show when this lane is busiest */
+}
+
+@keyframes busiestFade {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+
+/* ----------------------------------------------------------
+   7. ACTIVE SIGNAL CARD
+   ---------------------------------------------------------- */
+.active-signal-card {
+  background: var(--clr-surface-alt);
+  border: 1px solid var(--clr-border);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.active-signal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.active-label  { color: var(--clr-text-secondary); }
+.active-value  { font-weight: 600; color: var(--clr-text-primary); }
+.active-value.mono      { font-family: var(--font-mono); }
+.active-value.highlight { color: var(--clr-green); font-size: 1rem; }
+.active-value.dim       { color: var(--clr-text-muted); font-size: 0.72rem; }
+
+/* Phase badge — colour-coded pill showing current signal state */
+.phase-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 20px;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+.phase-green  {
+  background: #14532d;
+  color: var(--clr-green);
+  box-shadow: 0 0 8px var(--clr-green-glow);
+}
+.phase-yellow {
+  background: #422006;
+  color: var(--clr-yellow);
+  box-shadow: 0 0 8px var(--clr-yellow-glow);
+}
+.phase-red    {
+  background: #450a0a;
+  color: var(--clr-red);
+  box-shadow: 0 0 8px var(--clr-red-glow);
+}
+
+
+/* ----------------------------------------------------------
+   8. SYSTEM LOG
+   ---------------------------------------------------------- */
+.log-box {
+  background: var(--clr-bg);
+  border: 1px solid var(--clr-border);
+  border-radius: 10px;
+  padding: 10px;
+  height: 130px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .log-entry {
-    font-size: 9px; line-height: 1.6;
-    color: var(--text-dim);
-    border-left: 2px solid var(--border);
-    padding-left: 6px;
-    animation: logSlide 0.25s ease;
-}
-.log-entry.spawn  { border-color: var(--green); color: var(--green); }
-.log-entry.signal { border-color: var(--blue);  color: var(--blue); }
-.log-entry.alert  { border-color: var(--amber); color: var(--amber); }
-.log-entry.extend { border-color: var(--red);   color: var(--red); }
-@keyframes logSlide {
-    from { opacity: 0; transform: translateX(-4px); }
-    to   { opacity: 1; transform: translateX(0); }
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--clr-text-secondary);
+  line-height: 1.4;
+  padding: 2px 0;
+  border-bottom: 1px solid var(--clr-border);
 }
 
-/* ============ CANVAS AREA ============ */
-.canvas-wrapper {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 14px; padding: 20px;
-    background: var(--bg);
+.log-entry:last-child { border-bottom: none; }
+.log-entry.green-log  { color: var(--clr-green); }
+.log-entry.yellow-log { color: var(--clr-yellow); }
+.log-entry.red-log    { color: #f87171; }
+
+
+/* ----------------------------------------------------------
+   9. INTERSECTION WRAPPER
+   ---------------------------------------------------------- */
+.intersection-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 
-.canvas-frame {
-    position: relative;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
+/* Square canvas for the intersection */
+.intersection-container {
+  position: relative;
+  width: var(--inter-size);
+  height: var(--inter-size);
+  background: var(--clr-bg);
+  border-radius: 16px;
+  border: 1px solid var(--clr-border);
+  box-shadow: 0 8px 40px #00000060, inset 0 0 60px #0003;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
-#trafficCanvas { display: block; background: #141414; }
 
-.canvas-overlay-corners { display: none; }
+/* ----------------------------------------------------------
+   10. ROADS
+   ---------------------------------------------------------- */
 
-/* ============ CONTROLS ============ */
-.controls-bar {
-    display: flex; align-items: center; gap: 8px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 14px;
+/* Vertical road (runs top to bottom through centre) */
+.road-vertical {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: var(--road-width);
+  height: 100%;
+  transform: translateX(-50%);
+  background: var(--clr-road);
+  box-shadow: inset 0 0 30px #00000050;
 }
 
-.ctrl-btn {
-    font-family: var(--font-ui);
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text);
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    padding: 5px 13px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-    letter-spacing: 0.01em;
-}
-.ctrl-btn:hover:not(:disabled) {
-    background: #2a2a2a;
-    border-color: #3a3a3a;
-}
-.ctrl-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.ctrl-btn.active { background: #1a2e22; border-color: #2e5040; color: var(--green); }
-.heatmap-btn { color: var(--text-dim); }
-.heatmap-btn.active { background: #2a1f08; border-color: #4a3810; color: var(--amber); }
-
-.speed-control {
-    display: flex; align-items: center; gap: 7px;
-    color: var(--text-dim); font-size: 10px;
-    font-family: var(--font-ui);
-    margin-left: 4px;
-}
-#speedVal { color: var(--text); font-weight: 500; min-width: 22px; }
-
-input[type="range"] {
-    -webkit-appearance: none;
-    width: 80px; height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    outline: none; cursor: pointer;
-}
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 12px; height: 12px;
-    background: var(--text-dim);
-    border-radius: 50%;
+/* Horizontal road */
+.road-horizontal {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: var(--road-width);
+  width: 100%;
+  transform: translateY(-50%);
+  background: var(--clr-road);
+  box-shadow: inset 0 0 30px #00000050;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+/* Central intersection square */
+.intersection-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--road-width);
+  height: var(--road-width);
+  transform: translate(-50%, -50%);
+  background: var(--clr-asphalt);
+  z-index: 5;
+}
+
+/* Road centre-line markings (vertical) */
+.road-markings {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.road-markings-v {
+  left: 50%;
+  top: 0;
+  width: var(--road-width);
+  height: 100%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.road-markings-h {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: var(--road-width);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+/* Individual dashes */
+.dash {
+  width: 4px;
+  height: 36px;
+  background: var(--clr-marking);
+  border-radius: 2px;
+}
+
+.dash-h {
+  width: 36px;
+  height: 4px;
+}
+
+
+/* ----------------------------------------------------------
+   11. ZEBRA CROSSWALKS
+   ---------------------------------------------------------- */
+/* ── Heat overlays on each road arm ──────────────────────────────────────
+   Each overlay covers one road arm with a semi-transparent
+   colour tint. JS toggles heat-low | heat-medium | heat-high.
+   z-index sits ABOVE the road but BELOW vehicles (z=3).
+   opacity defaults to 0 (invisible at low density).
+   ─────────────────────────────────────────────────────────────── */
+.heat-overlay {
+  position: absolute;
+  z-index: 3;              /* above road, below vehicles (z=10) */
+  pointer-events: none;
+  opacity: 0;              /* invisible at low/zero density */
+  transition: opacity 0.6s ease, background-color 0.6s ease;
+}
+
+/* Road arm dimensions mirror the CSS road rules */
+.heat-north {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--road-width);
+  height: calc(50% - var(--road-width) / 2);
+}
+
+.heat-south {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--road-width);
+  height: calc(50% - var(--road-width) / 2);
+}
+
+.heat-east {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: calc(50% - var(--road-width) / 2);
+  height: var(--road-width);
+}
+
+.heat-west {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: calc(50% - var(--road-width) / 2);
+  height: var(--road-width);
+}
+
+/* Heat level classes (JS toggles these) */
+.heat-overlay.heat-low    { background: #22c55e; opacity: 0.10; }
+.heat-overlay.heat-medium { background: #eab308; opacity: 0.18; }
+.heat-overlay.heat-high   { background: #ef4444; opacity: 0.28; }
+
+.crosswalk {
+  position: absolute;
+  z-index: 6;
+  pointer-events: none;
+
+  /* Repeating stripes */
+  background: repeating-linear-gradient(
+    90deg,
+    #ffffff15 0px,
+    #ffffff15 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+
+.crosswalk-north {
+  bottom: calc(50% + var(--road-width) / 2);
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--road-width);
+  height: 20px;
+}
+
+.crosswalk-south {
+  top: calc(50% + var(--road-width) / 2);
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--road-width);
+  height: 20px;
+}
+
+.crosswalk-east {
+  top: 50%;
+  left: calc(50% + var(--road-width) / 2);
+  transform: translateY(-50%);
+  width: 20px;
+  height: var(--road-width);
+  background: repeating-linear-gradient(
+    180deg,
+    #ffffff15 0px,
+    #ffffff15 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+
+.crosswalk-west {
+  top: 50%;
+  right: calc(50% + var(--road-width) / 2);
+  transform: translateY(-50%);
+  width: 20px;
+  height: var(--road-width);
+  background: repeating-linear-gradient(
+    180deg,
+    #ffffff15 0px,
+    #ffffff15 8px,
+    transparent 8px,
+    transparent 16px
+  );
+}
+
+
+/* ----------------------------------------------------------
+   12. TRAFFIC LIGHTS
+   ---------------------------------------------------------- */
+.traffic-light-pole {
+  position: absolute;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pole positions — one at each corner of the intersection box */
+
+/* NE corner — signals vehicles coming FROM north (southbound) */
+.north-pole {
+  top:  calc(50% - var(--road-width) / 2 - 72px);
+  left: calc(50% + var(--road-width) / 2 + 6px);
+}
+
+/* SW corner — signals vehicles coming FROM south (northbound) */
+.south-pole {
+  top:  calc(50% + var(--road-width) / 2 + 6px);
+  left: calc(50% - var(--road-width) / 2 - 48px);
+}
+
+/* SE corner — signals vehicles coming FROM east (westbound) */
+.east-pole {
+  top:  calc(50% + var(--road-width) / 2 + 6px);
+  left: calc(50% + var(--road-width) / 2 + 6px);
+}
+
+/* NW corner — signals vehicles coming FROM west (eastbound) */
+.west-pole {
+  top:  calc(50% - var(--road-width) / 2 - 72px);
+  left: calc(50% - var(--road-width) / 2 - 48px);
+}
+
+/* The housing box */
+.traffic-light {
+  background: #0d1117;
+  border: 2px solid #1e2d45;
+  border-radius: 10px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 0 4px 20px #000000aa, inset 0 0 10px #00000060;
+}
+
+/* Individual light circles */
+.light {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1a1a1a;  /* off state */
+  border: 1px solid #333;
+  transition: background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+/* ON states */
+.light.red-on {
+  background: var(--clr-red);
+  box-shadow: 0 0 12px var(--clr-red-glow), 0 0 4px var(--clr-red);
+}
+
+.light.yellow-on {
+  background: var(--clr-yellow);
+  box-shadow: 0 0 12px var(--clr-yellow-glow), 0 0 4px var(--clr-yellow);
+}
+
+.light.green-on {
+  background: var(--clr-green);
+  box-shadow: 0 0 12px var(--clr-green-glow), 0 0 4px var(--clr-green);
+}
+
+
+/* ----------------------------------------------------------
+   13. VEHICLE LAYER
+   ---------------------------------------------------------- */
+.vehicle-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.vehicle {
+  position: absolute;
+  border-radius: 4px;
+  will-change: top, left;
+  transition: top 0.32s ease, left 0.32s ease, background-color 0.2s ease;
+}
+
+@keyframes vehiclePopIn {
+  from { transform: scale(0.2); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.vehicle.waiting {
+  background: #3b82f6;
+  box-shadow: 0 0 6px #3b82f655;
+  animation: vehiclePopIn 0.2s ease forwards;
+}
+
+.vehicle.moving {
+  background: var(--clr-green);
+  box-shadow: 0 0 10px var(--clr-green-glow);
+  animation: none;
+  transition: none;
+}
+
+.vehicle.vertical   { width: 14px; height: 24px; }
+.vehicle.horizontal { width: 24px; height: 14px; }
+
+
+/* ----------------------------------------------------------
+   14. DIRECTION LABELS
+   ---------------------------------------------------------- */
+.direction-labels {
+  position: relative;
+  width: var(--inter-size);
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.dir-label {
+  position: absolute;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+}
+
+.north-label { left: 50%; transform: translateX(-50%); top: 0; }
+.south-label { left: 50%; transform: translateX(-50%); top: 0; }
+.east-label  { right: 0; top: 0; }
+.west-label  { left: 0; top: 0; }
+
+
+/* ----------------------------------------------------------
+   15. BUTTONS
+   ---------------------------------------------------------- */
+.btn-group {
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  outline-offset: 3px;
+}
+
+.btn:focus-visible { outline: 2px solid var(--clr-accent); }
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: #fff;
+  box-shadow: 0 2px 12px #3b82f640;
+}
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb, #60a5fa);
+  box-shadow: 0 4px 18px #3b82f660;
+  transform: translateY(-1px);
+}
+
+.btn-warning {
+  background: linear-gradient(135deg, #92400e, #eab308);
+  color: #fff;
+  box-shadow: 0 2px 12px #eab30840;
+}
+.btn-warning:hover:not(:disabled) {
+  background: linear-gradient(135deg, #b45309, #facc15);
+  box-shadow: 0 4px 18px #eab30860;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #7f1d1d, #ef4444);
+  color: #fff;
+  box-shadow: 0 2px 12px #ef444440;
+}
+.btn-danger:hover:not(:disabled) {
+  background: linear-gradient(135deg, #991b1b, #f87171);
+  box-shadow: 0 4px 18px #ef444460;
+  transform: translateY(-1px);
+}
+
+.btn-spawn {
+  background: var(--clr-surface-alt);
+  border: 1px solid var(--clr-border);
+  color: var(--clr-text-primary);
+  font-size: 0.78rem;
+  width: 100%;
+}
+.btn-spawn:hover:not(:disabled) {
+  border-color: var(--clr-accent);
+  background: var(--clr-accent-glow);
+  color: #93c5fd;
+  transform: translateY(-1px);
+}
+
+
+/* ----------------------------------------------------------
+   16. SPEED SLIDER
+   ---------------------------------------------------------- */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slider-min, .slider-max {
+  font-size: 0.68rem;
+  color: var(--clr-text-muted);
+  white-space: nowrap;
+}
+
+.slider {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--clr-border);
+  cursor: pointer;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--clr-accent);
+  box-shadow: 0 0 8px var(--clr-accent-glow);
+  transition: box-shadow var(--transition-fast);
+}
+
+.slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 14px var(--clr-accent);
+}
+
+.slider-value {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--clr-accent);
+  text-align: center;
+}
+
+
+/* ----------------------------------------------------------
+   17. SPAWN BUTTONS
+   ---------------------------------------------------------- */
+.spawn-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+
+/* ----------------------------------------------------------
+   18. STATISTICS GRID
+   ---------------------------------------------------------- */
+/* ── Statistics grid ────────────────────────────────────────────────────────────
+   6 boxes in a 3-column grid (was 2-column with 4 boxes)
+   ──────────────────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.stat-box {
+  background: var(--clr-surface-alt);
+  border: 1px solid var(--clr-border);
+  border-radius: 10px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-align: center;
+  transition: border-color 0.3s ease;
+}
+
+/* Highlight stat box when value is elevated */
+.stat-box.stat-highlight {
+  border-color: var(--clr-accent);
+  box-shadow: 0 0 10px var(--clr-accent-glow);
+}
+
+.stat-num {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--clr-accent);
+  transition: color 0.3s ease;
+}
+
+/* Colour the "Waiting Now" number by severity */
+.stat-num.warn  { color: var(--clr-yellow); }
+.stat-num.alert { color: var(--clr-red); }
+
+.stat-lbl {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--clr-text-muted);
+}
+
+
+/* ----------------------------------------------------------
+   19. LEGEND
+   ---------------------------------------------------------- */
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--clr-text-secondary);
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+
+/* ----------------------------------------------------------
+   20. FOOTER
+   ---------------------------------------------------------- */
+.app-footer {
+  height: var(--footer-height);
+  background: var(--clr-surface);
+  border-top: 1px solid var(--clr-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  color: var(--clr-text-muted);
+  letter-spacing: 0.04em;
+}
+
+
+/* ----------------------------------------------------------
+   21. UTILITY CLASSES
+   ---------------------------------------------------------- */
+.mono { font-family: var(--font-mono); }
+
+
+/* ----------------------------------------------------------
+   22. VEHICLE MOVE ANIMATIONS (added by JS)
+   ---------------------------------------------------------- */
+
+/* North → moving south (top to bottom) */
+@keyframes moveNorth {
+  from { transform: translateY(0);   opacity: 1; }
+  to   { transform: translateY(560px); opacity: 0; }
+}
+
+/* South → moving north (bottom to top) */
+@keyframes moveSouth {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(-560px); opacity: 0; }
+}
+
+/* East → moving west (right to left) */
+@keyframes moveEast {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(-560px); opacity: 0; }
+}
+
+/* West → moving east (left to right) */
+@keyframes moveWest {
+  from { transform: translateX(0);   opacity: 1; }
+  to   { transform: translateX(560px); opacity: 0; }
+}
+
+.vehicle.anim-north { animation: moveNorth linear forwards; }
+.vehicle.anim-south { animation: moveSouth linear forwards; }
+.vehicle.anim-east  { animation: moveEast  linear forwards; }
+.vehicle.anim-west  { animation: moveWest  linear forwards; }
+
+
+/* ----------------------------------------------------------
+   23. RESPONSIVE FALLBACK (for smaller screens)
+   ---------------------------------------------------------- */
+@media (max-width: 1380px) {
+  :root {
+    --inter-size: 440px;
+    --road-width: 96px;
+    --panel-width: 220px;
+    --gap: 10px;
+  }
+}
+
+@media (max-width: 1200px) {
+  :root {
+    --inter-size: 380px;
+    --road-width: 86px;
+    --panel-width: 200px;
+    --gap: 8px;
+  }
+  .app-main { padding: 8px; }
+}
+
+@media (max-width: 960px) {
+  :root { --inter-size: 320px; --road-width: 76px; --panel-width: 180px; }
+}
+
+@media (max-width: 780px) {
+  .app-main { flex-direction: column; overflow-y: auto; }
+  .stats-panel, .control-panel { width: 100%; min-width: unset; }
+  :root { --inter-size: 300px; --road-width: 70px; }
+}

@@ -1,92 +1,288 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Traffic Simulation</title>
+    <title>Smart Traffic Control System</title>
+    <meta name="description" content="Adaptive signal system based on real-time traffic density." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-<div class="scanlines"></div>
+  </head>
 
-<header class="top-bar">
-    <div class="header-left">
-        <span class="logo-icon">◈</span>
-        <div class="header-title">
-            <span class="title-main">Traffic Simulation</span>
-            <span class="title-sub">Real-time signal optimization</span>
+  <body>
+    <header class="app-header" role="banner">
+      <div class="header-content">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">
+            <span class="icon-dot red"></span>
+            <span class="icon-dot yellow"></span>
+            <span class="icon-dot green"></span>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">Smart Traffic Control System</h1>
+            <p class="brand-subtitle">Adaptive signal system based on real-time traffic density</p>
+          </div>
         </div>
-    </div>
-    <div class="header-right">
-        <div class="live-indicator"><span class="dot"></span> LIVE</div>
-        <div class="sim-clock" id="simClock">00:00:00</div>
-    </div>
-</header>
+        <div class="live-badge" id="liveBadge" aria-live="polite">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <span>LIVE SIMULATION</span>
+        </div>
+      </div>
+    </header>
 
-<main class="workspace">
+    <main class="app-main" role="main">
 
-    <!-- LEFT SIDEBAR -->
-    <aside class="sidebar sidebar-left">
-        <section class="panel">
-            <h2 class="panel-title">◆ INTERSECTION STATUS</h2>
-            <div id="intersectionStatus" class="status-list"></div>
-        </section>
+      <aside class="stats-panel" aria-label="Traffic density statistics">
+        <h2 class="panel-title">Lane Density</h2>
 
-        <section class="panel">
-            <h2 class="panel-title">◆ SIGNAL TIMINGS</h2>
-            <div id="signalTimings" class="timing-list"></div>
-        </section>
-    </aside>
-
-    <!-- CANVAS CENTER -->
-    <div class="canvas-wrapper">
-        <div class="canvas-frame">
-            <canvas id="trafficCanvas" width="700" height="560"></canvas>
-            <div class="canvas-overlay-corners">
-                <span class="corner tl"></span>
-                <span class="corner tr"></span>
-                <span class="corner bl"></span>
-                <span class="corner br"></span>
-            </div>
+        <div class="lane-card" id="statsNorth">
+          <div class="lane-header">
+            <span class="lane-dir-label">
+              <span class="heat-dot" id="heatDotNorth"></span>
+              <span class="dir-arrow">↑</span> North
+            </span>
+            <span class="lane-count" id="countNorth">0</span>
+          </div>
+          <div class="density-bar-bg"><div class="density-bar" id="barNorth"></div></div>
+          <div class="lane-footer">
+            <span class="density-label" id="densityNorth">Low</span>
+            <span class="busiest-badge" id="busiestNorth">🔥 BUSIEST</span>
+          </div>
         </div>
 
-        <!-- CONTROLS -->
-        <div class="controls-bar">
-            <button class="ctrl-btn" id="btnStart">▶ START</button>
-            <button class="ctrl-btn" id="btnPause" disabled>⏸ PAUSE</button>
-            <button class="ctrl-btn" id="btnReset">↺ RESET</button>
-            <div class="speed-control">
-                <label for="speedSlider">SPEED</label>
-                <input type="range" id="speedSlider" min="0.5" max="4" step="0.5" value="1" />
-                <span id="speedVal">1x</span>
-            </div>
-            <button class="ctrl-btn heatmap-btn" id="btnHeatmap">⬛ HEATMAP OFF</button>
+        <div class="lane-card" id="statsSouth">
+          <div class="lane-header">
+            <span class="lane-dir-label">
+              <span class="heat-dot" id="heatDotSouth"></span>
+              <span class="dir-arrow">↓</span> South
+            </span>
+            <span class="lane-count" id="countSouth">0</span>
+          </div>
+          <div class="density-bar-bg"><div class="density-bar" id="barSouth"></div></div>
+          <div class="lane-footer">
+            <span class="density-label" id="densitySouth">Low</span>
+            <span class="busiest-badge" id="busiestSouth">🔥 BUSIEST</span>
+          </div>
         </div>
-    </div>
 
-    <!-- RIGHT SIDEBAR -->
-    <aside class="sidebar sidebar-right">
-        <section class="panel">
-            <h2 class="panel-title">◆ CONGESTION METRICS</h2>
-            <div id="congestionMetrics" class="metrics-list">
-                <div class="metric-row"><span class="mlabel">TOTAL VEHICLES</span><span class="mval" id="mTotal">0</span></div>
-                <div class="metric-row"><span class="mlabel">AVG WAIT</span><span class="mval" id="mWait">0.0s</span></div>
-                <div class="metric-row"><span class="mlabel">MOST CONGESTED</span><span class="mval" id="mCong">—</span></div>
-                <div class="metric-row"><span class="mlabel">SIGNALS EXTENDED</span><span class="mval" id="mExtended">0</span></div>
+        <div class="lane-card" id="statsEast">
+          <div class="lane-header">
+            <span class="lane-dir-label">
+              <span class="heat-dot" id="heatDotEast"></span>
+              <span class="dir-arrow">→</span> East
+            </span>
+            <span class="lane-count" id="countEast">0</span>
+          </div>
+          <div class="density-bar-bg"><div class="density-bar" id="barEast"></div></div>
+          <div class="lane-footer">
+            <span class="density-label" id="densityEast">Low</span>
+            <span class="busiest-badge" id="busiestEast">🔥 BUSIEST</span>
+          </div>
+        </div>
+
+        <div class="lane-card" id="statsWest">
+          <div class="lane-header">
+            <span class="lane-dir-label">
+              <span class="heat-dot" id="heatDotWest"></span>
+              <span class="dir-arrow">←</span> West
+            </span>
+            <span class="lane-count" id="countWest">0</span>
+          </div>
+          <div class="density-bar-bg"><div class="density-bar" id="barWest"></div></div>
+          <div class="lane-footer">
+            <span class="density-label" id="densityWest">Low</span>
+            <span class="busiest-badge" id="busiestWest">🔥 BUSIEST</span>
+          </div>
+        </div>
+
+        <hr class="panel-divider" />
+
+        <h2 class="panel-title">Active Signal</h2>
+        <div class="active-signal-card">
+          <div class="active-signal-row">
+            <span class="active-label">Direction</span>
+            <span class="active-value" id="activeDirection">--</span>
+          </div>
+          <div class="active-signal-row">
+            <span class="active-label">Phase</span>
+            <span class="active-value" id="activePhase">
+              <span class="phase-badge phase-red">RED</span>
+            </span>
+          </div>
+          <div class="active-signal-row">
+            <span class="active-label">Green Time</span>
+            <span class="active-value mono" id="activeGreenTime">--</span>
+          </div>
+          <div class="active-signal-row">
+            <span class="active-label">Formula</span>
+            <span class="active-value mono dim" id="activeFormula">min(15, n×2)</span>
+          </div>
+          <div class="active-signal-row">
+            <span class="active-label">Countdown</span>
+            <span class="active-value mono highlight" id="countdown">--</span>
+          </div>
+        </div>
+
+        <hr class="panel-divider" />
+        <h2 class="panel-title">System Log</h2>
+        <div class="log-box" id="logBox" aria-live="polite" aria-label="System event log">
+          <p class="log-entry">System initializing...</p>
+        </div>
+      </aside>
+
+      <section class="intersection-wrapper" aria-label="Traffic intersection simulation">
+        <div class="intersection-container" id="intersectionContainer">
+
+          <div class="road road-vertical" aria-hidden="true"></div>
+          <div class="road road-horizontal" aria-hidden="true"></div>
+
+          <div class="road-markings road-markings-v" aria-hidden="true">
+            <div class="dash"></div><div class="dash"></div><div class="dash"></div>
+            <div class="dash"></div><div class="dash"></div>
+          </div>
+          <div class="road-markings road-markings-h" aria-hidden="true">
+            <div class="dash dash-h"></div><div class="dash dash-h"></div><div class="dash dash-h"></div>
+            <div class="dash dash-h"></div><div class="dash dash-h"></div>
+          </div>
+
+          <div class="intersection-center" aria-hidden="true"></div>
+
+          <div class="crosswalk crosswalk-north" aria-hidden="true"></div>
+          <div class="crosswalk crosswalk-south" aria-hidden="true"></div>
+          <div class="crosswalk crosswalk-east"  aria-hidden="true"></div>
+          <div class="crosswalk crosswalk-west"  aria-hidden="true"></div>
+
+          <div class="heat-overlay heat-north" id="heatNorth" aria-hidden="true"></div>
+          <div class="heat-overlay heat-south" id="heatSouth" aria-hidden="true"></div>
+          <div class="heat-overlay heat-east"  id="heatEast"  aria-hidden="true"></div>
+          <div class="heat-overlay heat-west"  id="heatWest"  aria-hidden="true"></div>
+
+          <div class="traffic-light-pole north-pole" aria-label="North traffic signal">
+            <div class="traffic-light" id="lightNorth">
+              <div class="light red-light"    id="lightNorthRed"></div>
+              <div class="light yellow-light" id="lightNorthYellow"></div>
+              <div class="light green-light"  id="lightNorthGreen"></div>
             </div>
-            <div id="queueBars" class="queue-bars"></div>
-        </section>
+          </div>
 
-        <section class="panel log-panel">
-            <h2 class="panel-title">◆ SIMULATION LOG</h2>
-            <div id="simLog" class="log-list"></div>
-        </section>
-    </aside>
+          <div class="traffic-light-pole south-pole" aria-label="South traffic signal">
+            <div class="traffic-light" id="lightSouth">
+              <div class="light red-light"    id="lightSouthRed"></div>
+              <div class="light yellow-light" id="lightSouthYellow"></div>
+              <div class="light green-light"  id="lightSouthGreen"></div>
+            </div>
+          </div>
 
-</main>
+          <div class="traffic-light-pole east-pole" aria-label="East traffic signal">
+            <div class="traffic-light" id="lightEast">
+              <div class="light red-light"    id="lightEastRed"></div>
+              <div class="light yellow-light" id="lightEastYellow"></div>
+              <div class="light green-light"  id="lightEastGreen"></div>
+            </div>
+          </div>
 
-<script src="simulation.js"></script>
-</body>
+          <div class="traffic-light-pole west-pole" aria-label="West traffic signal">
+            <div class="traffic-light" id="lightWest">
+              <div class="light red-light"    id="lightWestRed"></div>
+              <div class="light yellow-light" id="lightWestYellow"></div>
+              <div class="light green-light"  id="lightWestGreen"></div>
+            </div>
+          </div>
+
+          <div class="vehicle-layer" id="vehicleLayer" aria-hidden="true"></div>
+
+        </div>
+
+        <div class="direction-labels" aria-hidden="true">
+          <span class="dir-label north-label">North ↑</span>
+          <span class="dir-label east-label">East →</span>
+          <span class="dir-label south-label">↓ South</span>
+          <span class="dir-label west-label">← West</span>
+        </div>
+      </section>
+
+      <aside class="control-panel" aria-label="Simulation controls">
+        <h2 class="panel-title">Controls</h2>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btnStart" aria-label="Start simulation">▶ Start</button>
+          <button class="btn btn-warning" id="btnPause" aria-label="Pause simulation" disabled>⏸ Pause</button>
+          <button class="btn btn-danger"  id="btnReset" aria-label="Reset simulation">↺ Reset</button>
+        </div>
+
+        <hr class="panel-divider" />
+
+        <div class="control-group">
+          <label class="control-label" for="speedSlider">Simulation Speed</label>
+          <div class="slider-row">
+            <span class="slider-min">Slow</span>
+            <input type="range" id="speedSlider" class="slider" min="0.5" max="3" step="0.5" value="1" aria-label="Simulation speed" />
+            <span class="slider-max">Fast</span>
+          </div>
+          <span class="slider-value" id="speedValue">1×</span>
+        </div>
+
+        <hr class="panel-divider" />
+
+        <h2 class="panel-title">Spawn Vehicles</h2>
+        <p class="panel-desc">Add vehicles to a lane to test density-adaptive signals.</p>
+        <div class="spawn-buttons">
+          <button class="btn btn-spawn" id="spawnNorth">↑ North (+5)</button>
+          <button class="btn btn-spawn" id="spawnSouth">↓ South (+5)</button>
+          <button class="btn btn-spawn" id="spawnEast">→ East (+5)</button>
+          <button class="btn btn-spawn" id="spawnWest">← West (+5)</button>
+        </div>
+
+        <hr class="panel-divider" />
+
+        <h2 class="panel-title">Statistics</h2>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-num" id="totalVehicles">0</span>
+            <span class="stat-lbl">Spawned</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="throughput">0</span>
+            <span class="stat-lbl">Passed</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="avgWait">0s</span>
+            <span class="stat-lbl">Avg Wait</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="cycleCount">0</span>
+            <span class="stat-lbl">Cycles</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="statEfficiency">0%</span>
+            <span class="stat-lbl">Efficiency</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="statTotal">0</span>
+            <span class="stat-lbl">Waiting Now</span>
+          </div>
+        </div>
+
+        <hr class="panel-divider" />
+
+        <h2 class="panel-title">Legend</h2>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-color" style="background:#22c55e"></span><span>Green – Priority lane</span></div>
+          <div class="legend-item"><span class="legend-color" style="background:#eab308"></span><span>Yellow – Prepare to stop</span></div>
+          <div class="legend-item"><span class="legend-color" style="background:#ef4444"></span><span>Red – Stop</span></div>
+          <div class="legend-item"><span class="legend-color" style="background:#3b82f6"></span><span>Blue cars – Waiting</span></div>
+          <div class="legend-item"><span class="legend-color" style="background:#22c55e"></span><span>Green cars – Moving</span></div>
+        </div>
+      </aside>
+
+    </main>
+
+    <footer class="app-footer" role="contentinfo">
+      <p>Smart Traffic Control System &mdash; Density-Adaptive Signal Algorithm &copy; 2026</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
 </html>
